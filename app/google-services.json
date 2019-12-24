@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "353717608049",
+    "firebase_url": "https://photoupload-b810e.firebaseio.com",
+    "project_id": "photoupload-b810e",
+    "storage_bucket": "photoupload-b810e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353717608049:android:366a198925cfebc09705d0",
+        "android_client_info": {
+          "package_name": "com.example.photoupload"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "353717608049-2lmrps1gf49d4c72chlksieb6on017pm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUgjKyGqB8UuHrbjbp2PNa9ZMEBBYHuVY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "353717608049-2lmrps1gf49d4c72chlksieb6on017pm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
