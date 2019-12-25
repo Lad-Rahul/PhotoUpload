@@ -1,13 +1,17 @@
 package com.example.photoupload;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,12 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
+    private StorageTask mUploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +73,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openFileChooser();
+            }
+        });
+
+        mButtonUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mUploadTask != null && mUploadTask.isInProgress()){
+                    Toast.makeText(MainActivity.this,"Uplad in Progress",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    UploadFile();
+                }
             }
         });
 
@@ -92,4 +113,66 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-}
+
+    private String getFileExtension(Uri uri){
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void UploadFile(){
+
+        if(mImageUri != null){
+
+            //set filename as time in milisecond and store in Storage as time.extension
+            StorageReference fileRef = mStorageRef.child(System.currentTimeMillis()+"."+getFileExtension(mImageUri));
+
+            mUploadTask = fileRef.putFile(mImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressbar.setProgress(0);
+                                }
+                            },1000);
+
+                            Toast.makeText(MainActivity.this,"Upload successful",Toast.LENGTH_SHORT).show();
+
+                            Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+
+                            //get unique key and store in realtimeDatabase with imageurl and name from edittext
+                            String uploadId = mDatabaseRef.push().getKey();
+
+                            mDatabaseRef.child(uploadId).setValue(upload);
+
+
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(MainActivity.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                            mProgressbar.setProgress((int)progress);
+
+
+                        }
+                    });
+
+        }else{
+            Toast.makeText(this,"Image not selected",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+}//MainActivity
