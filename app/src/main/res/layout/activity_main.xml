@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
 
@@ -13,5 +14,47 @@
         android:id="@+id/btn_choose_image"
         android:text="choose picture"
         />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edittext_img_name"
+        android:layout_toEndOf="@+id/btn_choose_image"
+        android:layout_marginLeft="16dp"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/image_view"
+        android:layout_below="@id/btn_choose_image"
+        android:layout_above="@id/progress_bar"
+        android:layout_margin="16dp"/>
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_bar"
+        android:layout_above="@id/btn_upload"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_margin="16dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_upload"
+        android:text="upload"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_show_upload"
+        android:text="Show uploads"
+        android:layout_below="@id/progress_bar"
+        android:layout_margin="16dp"
+        android:textSize="16dp"
+        android:layout_toRightOf="@id/btn_upload"/>
 
 </RelativeLayout>

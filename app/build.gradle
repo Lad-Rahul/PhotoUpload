@@ -36,6 +36,9 @@ dependencies {
     //Glide Library
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
+    //firebase realtimedatabase
+    implementation 'com.google.firebase:firebase-database:16.0.1'
+
     //firebase storage
     implementation 'com.google.firebase:firebase-storage:16.0.1'
 
